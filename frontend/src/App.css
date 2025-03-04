@@ -1,0 +1,244 @@
+/* App.css */
+:root {
+    --primary-color: #1976d2;
+    --primary-dark: #0d5aa7;
+    --secondary-color: #03a9f4;
+    --accent-color: #ff5722;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --error-color: #f44336;
+    --gray-color: #757575;
+    --light-gray: #f1f1f1;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f7fa;
+  }
+  
+  button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* App Container */
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Server Status Alert */
+  .server-status-alert {
+    background-color: #ffe0e0;
+    color: #d32f2f;
+    padding: 0.75rem;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  
+  /* Header */
+  .app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .app-logo {
+    height: 40px;
+    margin-right: 1rem;
+  }
+  
+  .logo-container h1 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+  }
+  
+  .main-nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .nav-link {
+    color: #555;
+    font-weight: 500;
+    position: relative;
+    padding: 0.5rem 0;
+  }
+  
+  .nav-link:hover {
+    color: var(--primary-color);
+  }
+  
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+    transition: width 0.3s;
+  }
+  
+  .nav-link:hover::after {
+    width: 100%;
+  }
+  
+  /* User Controls */
+  .user-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .language-selector {
+    position: relative;
+  }
+  
+  .language-dropdown {
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  
+  .auth-links {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .auth-link {
+    color: var(--primary-color);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+  
+  .auth-link:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .user-greeting {
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .logout-btn {
+    padding: 0.5rem 1rem;
+    background-color: #f1f1f1;
+    color: #555;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+  
+  .logout-btn:hover {
+    background-color: #e0e0e0;
+  }
+  
+  /* Main Content */
+  .app-content {
+    flex: 1;
+    padding: 2rem;
+    background-color: #f5f7fa;
+  }
+  
+  /* Footer */
+  .app-footer {
+    padding: 1.5rem;
+    background-color: white;
+    text-align: center;
+    color: #777;
+    font-size: 0.9rem;
+    border-top: 1px solid #eee;
+  }
+  
+  /* Loading Container */
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  /* Authentication Required Message */
+  .auth-required {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 1024px) {
+    .app-header {
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    
+    .main-nav {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .user-controls {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .main-nav {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .nav-link {
+      padding: 0.5rem;
+    }
+    
+    .app-content {
+      padding: 1rem;
+    }
+  }

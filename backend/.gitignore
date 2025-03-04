@@ -1,0 +1,21 @@
+# Node dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+
+# Production build (if any)
+dist/
+build/
+
+# Cache
+.cache/
+
+# OS-specific files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,427 @@
+/* Dashboard.css */
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+  }
+  
+  .dashboard-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .action-button {
+    padding: 8px 16px;
+    background-color: #4a90e2;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .action-button:hover {
+    background-color: #3a7cc7;
+  }
+  
+  /* Stats Section */
+  .stats-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .stat-card {
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .stat-card.housing {
+    border-top: 4px solid #ff5a5f;
+  }
+  
+  .stat-card.magicbricks {
+    border-top: 4px solid #d92228;
+  }
+  
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .loading-stats {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 30px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    color: #666;
+  }
+  
+  /* Dashboard Grid */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+  }
+  
+  .dashboard-section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 18px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  .loading-indicator, .error-message, .no-data-message {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+  }
+  
+  .error-message {
+    color: #e74c3c;
+    background-color: #fff8f8;
+    border-radius: 4px;
+  }
+  
+  /* Property Grid */
+  .property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+  }
+  
+  .property-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .property-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .property-image {
+    height: 150px;
+    position: relative;
+  }
+  
+  .property-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .placeholder-image {
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 14px;
+  }
+  
+  /* Source Badges */
+  .property-source {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+  }
+  
+  .property-source.housing-com {
+    background-color: #ff5a5f;
+  }
+  
+  .property-source.magicbricks {
+    background-color: #d92228;
+  }
+  
+  .mini-source-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .mini-source-badge.housing-com {
+    background-color: #ff5a5f;
+  }
+  
+  .mini-source-badge.magicbricks {
+    background-color: #d92228;
+  }
+  
+  .property-details {
+    padding: 12px;
+  }
+  
+  .property-title {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .property-location {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .property-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .feature-item {
+    font-size: 12px;
+    padding: 2px 6px;
+    background-color: #f0f7ff;
+    border-radius: 4px;
+    color: #4a90e2;
+  }
+  
+  .property-price {
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  
+  .view-property-btn {
+    display: block;
+    text-align: center;
+    padding: 6px 0;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #333;
+    text-decoration: none;
+    font-size: 13px;
+    transition: background-color 0.2s;
+  }
+  
+  .view-property-btn:hover {
+    background-color: #ebebeb;
+  }
+  
+  .view-all-link {
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  .view-all-link a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .view-all-link a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Latest Properties List */
+  .latest-properties-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .latest-property-item {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+  }
+  
+  .property-mini-image {
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+    margin-right: 12px;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .property-mini-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .placeholder-mini-image {
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 10px;
+    text-align: center;
+  }
+  
+  .latest-property-details {
+    flex-grow: 1;
+    min-width: 0; /* Enables text truncation */
+  }
+  
+  .latest-property-details .property-title {
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+  
+  .latest-property-details .property-location {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+  
+  .property-mini-features {
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* News Section */
+  .real-estate-news {
+    grid-column: 1 / -1;
+  }
+  
+  .news-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .news-item {
+    display: flex;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .news-image {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+  }
+  
+  .news-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .news-content {
+    padding: 12px;
+    flex-grow: 1;
+  }
+  
+  .news-title {
+    margin: 0 0 5px 0;
+    font-size: 15px;
+    line-height: 1.3;
+  }
+  
+  .news-title a {
+    color: #333;
+    text-decoration: none;
+  }
+  
+  .news-title a:hover {
+    color: #4a90e2;
+  }
+  
+  .news-source {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+  }
+  
+  .news-description {
+    font-size: 13px;
+    color: #444;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .news-list {
+      grid-template-columns: 1fr;
+    }
+  }
