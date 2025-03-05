@@ -10,7 +10,7 @@ const User = require('../models/User');
 // @access  Private
 router.get('/', auth, async (req, res) => {
   try {
-    // Get clients assigned to current user (for agents) or all clients (for admin)
+    
     const user = await User.findById(req.user.id);
     
     let query = {};
@@ -53,7 +53,7 @@ router.post('/', [
       notes
     } = req.body;
 
-    // Create client object
+    
     const clientFields = {
       assignedTo: req.user.id,
       name,
@@ -67,7 +67,7 @@ router.post('/', [
     if (requirements) clientFields.requirements = requirements;
     if (followUpDate) clientFields.followUpDate = followUpDate;
     
-    // Process notes if provided
+    
     if (notes && notes.length > 0) {
       clientFields.notes = notes.map(note => ({
         ...note,
@@ -99,7 +99,7 @@ router.get('/:id', auth, async (req, res) => {
       return res.status(404).json({ msg: 'Client not found' });
     }
 
-    // Check if user has permission to view this client
+    
     const user = await User.findById(req.user.id);
     if (user.role !== 'admin' && client.assignedTo._id.toString() !== req.user.id) {
       return res.status(403).json({ msg: 'Not authorized to view this client' });
@@ -126,7 +126,7 @@ router.put('/:id', auth, async (req, res) => {
       return res.status(404).json({ msg: 'Client not found' });
     }
 
-    // Check if user has permission to update this client
+    
     const user = await User.findById(req.user.id);
     if (user.role !== 'admin' && client.assignedTo.toString() !== req.user.id) {
       return res.status(403).json({ msg: 'Not authorized to update this client' });
@@ -188,7 +188,6 @@ router.post('/:id/notes', [
       return res.status(404).json({ msg: 'Client not found' });
     }
 
-    // Check if user has permission
     const user = await User.findById(req.user.id);
     if (user.role !== 'admin' && client.assignedTo.toString() !== req.user.id) {
       return res.status(403).json({ msg: 'Not authorized' });

@@ -8,25 +8,25 @@ const path = require("path");
 const fs = require("fs");
 require("dotenv").config();
 
-// Import MongoDB connection
+
 const connectDB = require('./db');
 
-// Import Apify Service
+
 const { startMagicBricksScraper, startHousingComScraper, fetchAllProperties } = require('./apifyService');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
+
 connectDB();
 
-// CORS Configuration
+
 app.use(cors({
   origin: [
-    "http://localhost:3000",  // React development server default
-    "http://localhost:3001",  // Alternative React port
-    "http://localhost:3002",  // Your current React port
-    "http://localhost:5000"   // Express server
+    "http://localhost:3000",  
+    "http://localhost:3001",  
+    "http://localhost:3002",  
+    "http://localhost:5000"   
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
@@ -38,34 +38,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload({
   createParentPath: true,
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max file size
+  limits: { fileSize: 50 * 1024 * 1024 }, 
 }));
 
-// Rate Limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
   message: "Too many requests, please try again later"
 });
 app.use(limiter);
 
-// Ensure uploads directory exists
+
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Initialize Google Generative AI
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// AssemblyAI API Key
+
 const ASSEMBLYAI_API_KEY = process.env.ASSEMBLYAI_API_KEY || "b6b429b14ef94aa5a081cdf35d612088";
 
-// API Routes
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/clients', require('./routes/clients'));
 
-// Health Check Endpoint
+
 app.get("/health", (req, res) => {
   res.status(200).json({ 
     status: "up",

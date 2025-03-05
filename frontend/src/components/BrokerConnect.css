@@ -1,0 +1,406 @@
+/* BrokerConnect.css */
+:root {
+    --primary-color: #3498db;
+    --primary-dark: #2980b9;
+    --secondary-color: #2c3e50;
+    --secondary-dark: #1a252f;
+    --success-color: #2ecc71;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --gray-color: #7f8c8d;
+    --light-gray: #ecf0f1;
+    --dark-gray: #34495e;
+    --card-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    --hover-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --border-radius: 10px;
+    --transition-timing: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .dark-mode {
+    --primary-color: #4dabf7;
+    --primary-dark: #339af0;
+    --secondary-color: #212529;
+    --secondary-dark: #0b0e10;
+    --success-color: #40c057;
+    --warning-color: #fab005;
+    --danger-color: #fa5252;
+    --gray-color: #adb5bd;
+    --light-gray: #343a40;
+    --dark-gray: #dee2e6;
+    --card-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    --hover-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  }
+  
+  .broker-connect-container {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: all var(--transition-timing);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dark-mode .broker-connect-container {
+    background-color: #222;
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .broker-connect-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--light-gray);
+    text-align: center;
+  }
+  
+  .dark-mode .broker-connect-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .broker-connect-header h3 {
+    margin: 0 0 8px 0;
+    color: var(--secondary-color);
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+  
+  .dark-mode .broker-connect-header h3 {
+    color: #e9ecef;
+  }
+  
+  .broker-connect-header p {
+    margin: 0;
+    color: var(--gray-color);
+    font-size: 0.9rem;
+  }
+  
+  .brokers-list {
+    overflow-y: auto;
+    padding: 15px;
+    flex: 1;
+  }
+  
+  .broker-card {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    background-color: var(--light-gray);
+    transition: all var(--transition-timing);
+  }
+  
+  .dark-mode .broker-card {
+    background-color: #1a1a1a;
+  }
+  
+  .broker-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--hover-shadow);
+  }
+  
+  .broker-photo {
+    position: relative;
+    margin-right: 15px;
+  }
+  
+  .broker-photo img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark-mode .broker-photo img {
+    border-color: #2a2a2a;
+  }
+  
+  .status-indicator {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+  
+  .dark-mode .status-indicator {
+    border-color: #2a2a2a;
+  }
+  
+  .status-indicator.available {
+    background-color: var(--success-color);
+  }
+  
+  .status-indicator.unavailable {
+    background-color: var(--gray-color);
+  }
+  
+  .broker-info {
+    flex: 1;
+  }
+  
+  .broker-info h4 {
+    margin: 0 0 5px 0;
+    color: var(--secondary-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  
+  .dark-mode .broker-info h4 {
+    color: #e9ecef;
+  }
+  
+  .broker-specialty {
+    margin: 0 0 5px 0;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  .broker-stats {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .broker-rating, .broker-experience {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--dark-gray);
+    font-size: 0.85rem;
+  }
+  
+  .dark-mode .broker-rating, 
+  .dark-mode .broker-experience {
+    color: var(--gray-color);
+  }
+  
+  .broker-rating i {
+    color: var(--warning-color);
+  }
+  
+  .broker-experience i {
+    color: var(--primary-color);
+  }
+  
+  .connect-btn {
+    padding: 8px 16px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-timing);
+    white-space: nowrap;
+  }
+  
+  .connect-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(52, 152, 219, 0.3);
+  }
+  
+  .connect-btn.disabled {
+    background-color: var(--gray-color);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  .connect-btn.disabled:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  /* Chat Room Styles */
+  .broker-chat-room {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--light-gray);
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .dark-mode .chat-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .broker-info-compact {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .broker-info-compact img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+  }
+  
+  .broker-info-compact h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .broker-info-compact p {
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.9;
+  }
+  
+  .close-chat-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color var(--transition-timing);
+  }
+  
+  .close-chat-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #f5f7fa;
+  }
+  
+  .dark-mode .chat-messages {
+    background-color: #121212;
+  }
+  
+  .chat-message {
+    display: flex;
+    max-width: 80%;
+  }
+  
+  .chat-message.user {
+    align-self: flex-end;
+  }
+  
+  .chat-message.broker {
+    align-self: flex-start;
+  }
+  
+  .message-bubble {
+    padding: 10px 15px;
+    border-radius: 18px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chat-message.user .message-bubble {
+    background-color: var(--primary-color);
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+  
+  .chat-message.broker .message-bubble {
+    background-color: white;
+    color: var(--secondary-color);
+    border-bottom-left-radius: 4px;
+  }
+  
+  .dark-mode .chat-message.broker .message-bubble {
+    background-color: #2a2a2a;
+    color: #e9ecef;
+  }
+  
+  .message-bubble p {
+    margin: 0 0 5px 0;
+  }
+  
+  .message-time {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    display: block;
+    text-align: right;
+  }
+  
+  .chat-input-form {
+    display: flex;
+    padding: 10px 15px;
+    background-color: white;
+    border-top: 1px solid var(--light-gray);
+    gap: 10px;
+  }
+  
+  .dark-mode .chat-input-form {
+    background-color: #1a1a1a;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .chat-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid var(--light-gray);
+    border-radius: 20px;
+    font-size: 0.95rem;
+    background-color: var(--light-gray);
+    color: var(--secondary-color);
+    transition: all var(--transition-timing);
+  }
+  
+  .dark-mode .chat-input {
+    background-color: #2a2a2a;
+    border-color: #343a40;
+    color: #e9ecef;
+  }
+  
+  .chat-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  }
+  
+  .dark-mode .chat-input:focus {
+    box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+  }
+  
+  .send-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-timing);
+  }
+  
+  .send-button:hover {
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
+  }
