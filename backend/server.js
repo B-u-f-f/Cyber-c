@@ -157,14 +157,15 @@ app.post("/chatbot", async (req, res) => {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-pro-exp-02-05" });
 
-    // Enhanced prompt for multilingual context
-    const enhancedPrompt = `Context: This is a real estate communication assistant handling a multilingual conversation.
-Source Language: ${sourceLanguage || 'Not specified'}
-Target Language: ${targetLanguage || 'Not specified'}
-
-Original Prompt: ${prompt}
-
-Please provide a professional, culturally sensitive response in ${targetLanguage}.`;
+    // Stronger prompt to enforce language preference
+    const enhancedPrompt = `
+      You are a multilingual real estate assistant. 
+      The user is speaking in ${sourceLanguage}. 
+      Respond **ONLY in** ${targetLanguage}. 
+      Do not use English unless specifically asked. 
+      Here is the user's query:
+      ${prompt}
+    `;
 
     const result = await model.generateContent(enhancedPrompt);
     const response = result.response.text();
@@ -183,6 +184,7 @@ Please provide a professional, culturally sensitive response in ${targetLanguage
     });
   }
 });
+
 
 // Cache for property data to avoid frequent API calls
 let propertyCache = {

@@ -5,7 +5,8 @@ import "./SpeechRecognition.css";
 const realEstateKeywords = [
   "apartment", "house", "villa", "rent", "buy", "sell", "location", "neighborhood",
   "bedroom", "bathroom", "furnished", "mortgage", "loan", "property", "real estate",
-  "broker", "agent", "square feet", "budget", "price", "balcony", "garage", "view"
+  "broker", "agent", "square feet", "budget", "price", "balcony", "garage", "view", "locality",
+  "amenities", "garden", "pool", "security", "investment", "commercial", "residential"
 ];
 
 const SpeechRecognitionComponent = () => {
@@ -155,7 +156,7 @@ const SpeechRecognitionComponent = () => {
       const response = await axios.post("http://localhost:5000/live-translate", {
         text: transcription,
         sourceLanguage: "en",
-        targetLanguage: targetLanguage // Fix: Ensure correct state reference
+        targetLanguage: targetLanguage 
       });
 
       setTranslatedText(response.data.translation);

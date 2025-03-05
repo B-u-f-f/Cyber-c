@@ -18,7 +18,7 @@ const Home = ({ currentLanguage }) => {
     en: {
       title: "Real Estate Communication Assistant",
       subtitle: "Your multilingual property management solution",
-      description: "Streamline your real estate business with our comprehensive platform. Manage clients, find properties, and communicate in multiple languages with ease.",
+      description: "Streamline your real estate tasks with our comprehensive platform. Manage clients, find properties, and communicate in multiple languages with ease.",
       features: [
         {
           title: "Client Management",
