@@ -1,3 +1,5 @@
+// src/services/clientService.js - with fixes for MongoDB integration
+
 import axios from 'axios';
 import { API_BASE_URL } from '../utils/api';
 
@@ -12,6 +14,27 @@ const getAuthConfig = () => {
   };
 };
 
+// Add this function to your src/services/clientService.js file
+
+/**
+ * Add a conversation to a client
+ */
+export const addClientConversation = async (clientId, conversationData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/api/clients/${clientId}/conversations`,
+      conversationData,
+      getAuthConfig()
+    );
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error(`Error adding conversation to client ${clientId}:`, error);
+    return {
+      success: false,
+      message: error.response?.data?.msg || 'Failed to add conversation'
+    };
+  }
+};
 /**
  * Fetch all clients from the API
  */
@@ -55,9 +78,25 @@ export const getClientById = async (clientId) => {
  */
 export const createClient = async (clientData) => {
   try {
+    // Format notes to match the MongoDB schema
+    const formattedData = {
+      ...clientData,
+      notes: Array.isArray(clientData.notes) && clientData.notes.length > 0 
+        ? clientData.notes.map(note => ({ 
+            text: typeof note === 'string' ? note : note.text || '',
+            date: new Date()
+          }))
+        : []
+    };
+
+    // Ensure conversations field exists to match frontend expectations
+    if (!formattedData.conversations) {
+      formattedData.conversations = [];
+    }
+
     const response = await axios.post(
       `${API_BASE_URL}/api/clients`,
-      clientData,
+      formattedData,
       getAuthConfig()
     );
     return { success: true, data: response.data };
@@ -75,14 +114,28 @@ export const createClient = async (clientData) => {
  */
 export const updateClient = async (clientId, clientData, updateLastContact = false) => {
   try {
+    // Format notes to match the MongoDB schema if notes are present
+    const formattedData = { ...clientData };
+    
+    if (formattedData.notes) {
+      formattedData.notes = Array.isArray(formattedData.notes) 
+        ? formattedData.notes.map(note => {
+            if (typeof note === 'string') {
+              return { text: note, date: new Date() };
+            }
+            return note;
+          })
+        : [{ text: formattedData.notes, date: new Date() }];
+    }
+    
     // Add flag to update last contact timestamp if needed
     if (updateLastContact) {
-      clientData.updateLastContact = true;
+      formattedData.updateLastContact = true;
     }
     
     const response = await axios.put(
       `${API_BASE_URL}/api/clients/${clientId}`,
-      clientData,
+      formattedData,
       getAuthConfig()
     );
     return { success: true, data: response.data };

@@ -1,0 +1,104 @@
+/* src/components/ConversationForm.css */
+.conversation-form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .conversation-form-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 500px;
+    padding: 24px;
+  }
+  
+  .conversation-form-container h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.4rem;
+  }
+  
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .form-select, 
+  .form-input, 
+  .form-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .form-select:focus, 
+  .form-input:focus, 
+  .form-textarea:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+  
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  
+  .cancel-btn,
+  .save-btn {
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+  }
+  
+  .cancel-btn {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    color: #555;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .save-btn {
+    background-color: #4a90e2;
+    border: none;
+    color: white;
+  }
+  
+  .save-btn:hover {
+    background-color: #3a80d2;
+  }
+  
+  .save-btn:active,
+  .cancel-btn:active {
+    transform: translateY(1px);
+  }

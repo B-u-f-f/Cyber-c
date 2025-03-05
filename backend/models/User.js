@@ -11,6 +11,11 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  username: {
+    type: String,
+    unique: true,
+    sparse: true 
+  },
   password: {
     type: String,
     required: true
@@ -26,7 +31,21 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// Hash password before saving
+UserSchema.pre('save', function(next) {
+ 
+  if (!this.username && this.isNew) {
+    
+    if (this.email) {
+      
+      this.username = this.email.split('@')[0] + Math.floor(Math.random() * 10000);
+    } else if (this.name) {
+      
+      this.username = this.name.toLowerCase().replace(/\s+/g, '_') + Math.floor(Math.random() * 10000);
+    }
+  }
+  next();
+});
+
 UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
     return next();
@@ -40,7 +59,6 @@ UserSchema.pre('save', async function(next) {
     next(error);
   }
 });
-
 
 UserSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);

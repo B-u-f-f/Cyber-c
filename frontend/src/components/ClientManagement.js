@@ -1,89 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ClientManagement.css';
-
-// Sample client data - in a real app, you would fetch this from your API
-const sampleClients = [
-  {
-    id: 1,
-    name: "Aditya Sharma",
-    email: "aditya.sharma@example.com",
-    phone: "+91 98765 43210",
-    preferredLanguages: ["en", "hi"],
-    requirements: [
-      { type: "property_type", value: "Apartment", priority: "high" },
-      { type: "location", value: "Bandra", priority: "high" },
-      { type: "feature", value: "Sea View", priority: "medium" },
-      { type: "budget", value: "₹2.5 Cr", priority: "medium" }
-    ],
-    status: "interested",
-    lastContact: "2025-03-01T10:30:00",
-    notes: "Looking for 3BHK apartment in Bandra with sea view. Budget around 2.5 Cr. Prefers to communicate in Hindi for detailed discussions.",
-    conversations: [
-      { id: 101, date: "2025-03-01T10:30:00", type: "in-person", summary: "Initial meeting to discuss requirements" },
-      { id: 102, date: "2025-03-05T14:45:00", type: "phone", summary: "Followup call to confirm budget details" }
-    ]
-  },
-  {
-    id: 2,
-    name: "Priya Desai",
-    email: "priya.desai@example.com",
-    phone: "+91 87654 32109",
-    preferredLanguages: ["mr", "en"],
-    requirements: [
-      { type: "property_type", value: "Villa", priority: "high" },
-      { type: "location", value: "Pune Suburbs", priority: "high" },
-      { type: "feature", value: "Gated Community", priority: "high" },
-      { type: "budget", value: "₹1.8 Cr", priority: "medium" }
-    ],
-    status: "highly_interested",
-    lastContact: "2025-03-02T14:15:00",
-    notes: "Looking for a villa in a gated community in Pune suburbs. Prefers communication in Marathi. Budget is flexible up to 2 Cr for the right property.",
-    conversations: [
-      { id: 201, date: "2025-03-02T14:15:00", type: "virtual", summary: "Virtual meeting to discuss property types" },
-      { id: 202, date: "2025-03-07T11:30:00", type: "in-person", summary: "Site visit to three properties in Pune" },
-      { id: 203, date: "2025-03-08T09:45:00", type: "email", summary: "Sent property details and pricing options" }
-    ]
-  },
-  {
-    id: 3,
-    name: "Ravi Krishnan",
-    email: "ravi.k@example.com",
-    phone: "+91 76543 21098",
-    preferredLanguages: ["te", "en"],
-    requirements: [
-      { type: "property_type", value: "Apartment", priority: "high" },
-      { type: "location", value: "Hitech City", priority: "high" },
-      { type: "feature", value: "Close to Metro", priority: "high" },
-      { type: "budget", value: "₹1.2 Cr", priority: "high" }
-    ],
-    status: "viewing_scheduled",
-    lastContact: "2025-03-03T11:45:00",
-    notes: "Looking for 2BHK apartment in Hitech City near metro station. Strict budget of 1.2 Cr. Speaks Telugu and English.",
-    conversations: [
-      { id: 301, date: "2025-03-03T11:45:00", type: "phone", summary: "Initial call to understand requirements" },
-      { id: 302, date: "2025-03-06T16:30:00", type: "virtual", summary: "Virtual tour of 2 apartments" }
-    ]
-  },
-  {
-    id: 4,
-    name: "Sanjay Patil",
-    email: "sanjay.p@example.com",
-    phone: "+91 65432 10987",
-    preferredLanguages: ["mr"],
-    requirements: [
-      { type: "property_type", value: "Apartment", priority: "high" },
-      { type: "location", value: "Andheri", priority: "medium" },
-      { type: "feature", value: "Furnished", priority: "high" },
-      { type: "budget", value: "₹80 Lakh", priority: "high" }
-    ],
-    status: "new_inquiry",
-    lastContact: "2025-03-03T16:00:00",
-    notes: "Looking for 1BHK furnished apartment in Andheri. Budget is strict at 80 Lakhs. Only speaks Marathi.",
-    conversations: [
-      { id: 401, date: "2025-03-03T16:00:00", type: "in-person", summary: "Walk-in inquiry at office" }
-    ]
-  }
-];
+import { createClient, getClients, addClientNote, addClientConversation } from '../services/clientService';
+import ConversationForm from '../components/ConversationForm';
 
 const ClientManagement = ({ currentLanguage }) => {
   const [clients, setClients] = useState([]);
@@ -93,6 +11,9 @@ const ClientManagement = ({ currentLanguage }) => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [languageFilter, setLanguageFilter] = useState('all');
   const [isAddingClient, setIsAddingClient] = useState(false);
+  const [isAddingConversation, setIsAddingConversation] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [newClientData, setNewClientData] = useState({
     name: '',
     email: '',
@@ -100,52 +21,94 @@ const ClientManagement = ({ currentLanguage }) => {
     preferredLanguages: [],
     requirements: [],
     status: 'new_inquiry',
-    notes: ''
+    notes: [] // Initialize as an array
   });
-  
+
+  // Fetch clients on initial load
   useEffect(() => {
-    // In a real app, fetch clients from your API
-    setClients(sampleClients);
-    setFilteredClients(sampleClients);
+    const fetchClients = async () => {
+      try {
+        setLoading(true);
+        const response = await getClients();
+        if (response.success) {
+          // Transform notes to ensure compatibility with the UI
+          const transformedClients = response.data.map(client => ({
+            ...client,
+            // Ensure conversations array exists
+            conversations: client.conversations || [],
+            // Convert notes array to string for display if needed
+            notesDisplay: Array.isArray(client.notes) 
+              ? client.notes.map(note => note.text || note).join('\n\n')
+              : client.notes || ''
+          }));
+          
+          setClients(transformedClients);
+          setFilteredClients(transformedClients);
+        } else {
+          setError(response.message);
+        }
+      } catch (err) {
+        console.error('Error fetching clients:', err);
+        setError('Failed to load clients. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClients();
   }, []);
-  
+
   useEffect(() => {
     // Apply filters when they change
     let results = [...clients];
-    
+
     // Apply search term filter
     if (searchTerm) {
-      results = results.filter(client => 
-        client.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      results = results.filter(client =>
+        client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         client.phone.includes(searchTerm) ||
-        client.notes.toLowerCase().includes(searchTerm.toLowerCase())
+        (typeof client.notes === 'string' && client.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (Array.isArray(client.notes) && client.notes.some(note => 
+          (typeof note === 'string' && note.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (note.text && note.text.toLowerCase().includes(searchTerm.toLowerCase()))
+        ))
       );
     }
-    
+
     // Apply status filter
     if (statusFilter !== 'all') {
       results = results.filter(client => client.status === statusFilter);
     }
-    
+
     // Apply language filter
     if (languageFilter !== 'all') {
-      results = results.filter(client => 
+      results = results.filter(client =>
         client.preferredLanguages.includes(languageFilter)
       );
     }
-    
+
     setFilteredClients(results);
   }, [clients, searchTerm, statusFilter, languageFilter]);
-  
+
   const handleClientSelect = (client) => {
-    setSelectedClient(client);
+    // Ensure the client has the right structure for display
+    const displayClient = {
+      ...client,
+      conversations: client.conversations || [],
+      // Convert notes array to string for display if needed
+      notes: Array.isArray(client.notes)
+        ? client.notes.map(note => note.text || note).join('\n\n')
+        : client.notes || ''
+    };
+    
+    setSelectedClient(displayClient);
   };
-  
+
   const handleAddClient = () => {
     setIsAddingClient(true);
   };
-  
+
   const handleCancelAdd = () => {
     setIsAddingClient(false);
     setNewClientData({
@@ -155,30 +118,30 @@ const ClientManagement = ({ currentLanguage }) => {
       preferredLanguages: [],
       requirements: [],
       status: 'new_inquiry',
-      notes: ''
+      notes: [] // Reset to an empty array
     });
   };
-  
+
   const handleNewClientChange = (field, value) => {
     setNewClientData(prev => ({
       ...prev,
-      [field]: value
+      [field]: field === 'notes' ? (Array.isArray(value) ? value : [value]) : value
     }));
   };
-  
+
   const handleNewClientLanguageToggle = (language) => {
     setNewClientData(prev => {
       const updatedLanguages = prev.preferredLanguages.includes(language)
         ? prev.preferredLanguages.filter(lang => lang !== language)
         : [...prev.preferredLanguages, language];
-      
+
       return {
         ...prev,
         preferredLanguages: updatedLanguages
       };
     });
   };
-  
+
   const handleAddRequirement = () => {
     setNewClientData(prev => ({
       ...prev,
@@ -188,7 +151,7 @@ const ClientManagement = ({ currentLanguage }) => {
       ]
     }));
   };
-  
+
   const handleRequirementChange = (index, field, value) => {
     setNewClientData(prev => {
       const updatedRequirements = [...prev.requirements];
@@ -196,76 +159,179 @@ const ClientManagement = ({ currentLanguage }) => {
         ...updatedRequirements[index],
         [field]: value
       };
-      
+
       return {
         ...prev,
         requirements: updatedRequirements
       };
     });
   };
-  
+
   const handleRemoveRequirement = (index) => {
     setNewClientData(prev => ({
       ...prev,
       requirements: prev.requirements.filter((_, i) => i !== index)
     }));
   };
-  
-  const handleSaveClient = () => {
+
+  const handleSaveClient = async () => {
     // Validate required fields
     if (!newClientData.name || !newClientData.phone) {
       alert('Name and phone are required fields.');
       return;
     }
-    
-    // Add new client
-    const newClient = {
-      id: Date.now(),
-      ...newClientData,
-      lastContact: new Date().toISOString(),
-      conversations: []
-    };
-    
-    setClients(prev => [...prev, newClient]);
-    setIsAddingClient(false);
-    setNewClientData({
-      name: '',
-      email: '',
-      phone: '',
-      preferredLanguages: [],
-      requirements: [],
-      status: 'new_inquiry',
-      notes: ''
-    });
-    
-    // Automatically select the new client
-    setSelectedClient(newClient);
-  };
   
-  const handleAddNote = (clientId, note) => {
-    if (!note.trim()) return;
-    
-    setClients(prev => 
-      prev.map(client => 
-        client.id === clientId
-          ? { ...client, notes: client.notes + "\n\n" + note }
-          : client
-      )
-    );
-    
-    // Update selected client if necessary
-    if (selectedClient && selectedClient.id === clientId) {
-      setSelectedClient(prev => ({
-        ...prev,
-        notes: prev.notes + "\n\n" + note
-      }));
+    try {
+      // Format notes for MongoDB
+      const notesValue = typeof newClientData.notes === 'string' && newClientData.notes.trim() !== '' 
+        ? [{ text: newClientData.notes }] 
+        : Array.isArray(newClientData.notes) && newClientData.notes.length > 0
+          ? newClientData.notes.map(note => typeof note === 'string' ? { text: note } : note)
+          : [];
+      
+      // Prepare client data for submission
+      const clientDataToSend = {
+        ...newClientData,
+        notes: notesValue,
+        // Add empty conversations array to match frontend expectations
+        conversations: []
+      };
+  
+      // Send new client data to the backend
+      const response = await createClient(clientDataToSend);
+      if (response.success) {
+        // Format the returned client for display
+        const newClient = {
+          ...response.data,
+          conversations: response.data.conversations || [],
+          // Convert notes array to string for display
+          notes: Array.isArray(response.data.notes)
+            ? response.data.notes.map(note => note.text || note).join('\n\n')
+            : response.data.notes || ''
+        };
+        
+        setClients(prev => [...prev, newClient]);
+        setIsAddingClient(false);
+        setNewClientData({
+          name: '',
+          email: '',
+          phone: '',
+          preferredLanguages: [],
+          requirements: [],
+          status: 'new_inquiry',
+          notes: [] // Reset to an empty array
+        });
+        setSelectedClient(newClient);
+      } else {
+        alert(response.message || 'Failed to save client.');
+      }
+    } catch (error) {
+      console.error('Error saving client:', error);
+      alert('Failed to save client. Please try again.');
     }
   };
+
+  const handleAddNote = async (clientId, noteText) => {
+    if (!noteText.trim()) return;
   
+    try {
+      // Call API to add note
+      const response = await addClientNote(clientId, noteText);
+      
+      if (response.success) {
+        // Update clients list with new note
+        setClients(prev =>
+          prev.map(client =>
+            client._id === clientId
+              ? {
+                  ...client,
+                  notes: Array.isArray(client.notes)
+                    ? [...client.notes, { text: noteText, date: new Date() }]
+                    : [{ text: noteText, date: new Date() }],
+                  notesDisplay: (Array.isArray(client.notes)
+                    ? client.notes.map(note => typeof note === 'string' ? note : note.text).join('\n\n')
+                    : client.notes || '') + '\n\n' + noteText
+                }
+              : client
+          )
+        );
+      
+        // Update selected client if necessary
+        if (selectedClient && selectedClient._id === clientId) {
+          setSelectedClient(prev => ({
+            ...prev,
+            notes: prev.notes ? `${prev.notes}\n\n${noteText}` : noteText
+          }));
+        }
+      } else {
+        alert(response.message || 'Failed to add note.');
+      }
+    } catch (error) {
+      console.error('Error adding note:', error);
+      alert('Failed to add note. Please try again.');
+    }
+  };
+
+  const handleAddConversation = () => {
+    if (!selectedClient) {
+      alert('Please select a client first.');
+      return;
+    }
+    setIsAddingConversation(true);
+  };
+
+  const handleCancelAddConversation = () => {
+    setIsAddingConversation(false);
+  };
+
+  const handleSaveConversation = async (clientId, conversationData) => {
+    try {
+      const response = await addClientConversation(clientId, conversationData);
+      
+      if (response.success) {
+        // Update clients list
+        setClients(prev => 
+          prev.map(client => 
+            client._id === clientId
+              ? {
+                  ...client,
+                  conversations: [...(client.conversations || []), {
+                    ...conversationData,
+                    _id: Date.now() // Temporary ID until we refresh from server
+                  }],
+                  lastContact: conversationData.date
+                }
+              : client
+          )
+        );
+        
+        // Update selected client
+        if (selectedClient && selectedClient._id === clientId) {
+          setSelectedClient(prev => ({
+            ...prev,
+            conversations: [...(prev.conversations || []), {
+              ...conversationData,
+              _id: Date.now() // Temporary ID until we refresh from server
+            }],
+            lastContact: conversationData.date
+          }));
+        }
+        
+        // Close the form
+        setIsAddingConversation(false);
+      } else {
+        alert(response.message || 'Failed to add conversation.');
+      }
+    } catch (error) {
+      console.error('Error saving conversation:', error);
+      alert('Failed to save conversation. Please try again.');
+    }
+  };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString();
   };
-  
+
   const getLanguageName = (code) => {
     const languages = {
       en: "English",
@@ -275,7 +341,7 @@ const ClientManagement = ({ currentLanguage }) => {
     };
     return languages[code] || code;
   };
-  
+
   const getStatusInfo = (status) => {
     const statusInfo = {
       new_inquiry: { label: "New Inquiry", color: "blue" },
@@ -287,7 +353,17 @@ const ClientManagement = ({ currentLanguage }) => {
     };
     return statusInfo[status] || { label: status, color: "gray" };
   };
-  
+
+  // Display loading state
+  if (loading) {
+    return <div className="loading-container">Loading clients...</div>;
+  }
+
+  // Display error state
+  if (error) {
+    return <div className="error-container">Error: {error}</div>;
+  }
+
   return (
     <div className="client-management-container">
       {/* Client list and filters section */}
@@ -298,7 +374,7 @@ const ClientManagement = ({ currentLanguage }) => {
             Add New Client
           </button>
         </div>
-        
+
         <div className="client-filters">
           <div className="search-box">
             <input
@@ -309,7 +385,7 @@ const ClientManagement = ({ currentLanguage }) => {
               className="client-search-input"
             />
           </div>
-          
+
           <div className="filter-controls">
             <div className="filter-item">
               <label>Status:</label>
@@ -327,7 +403,7 @@ const ClientManagement = ({ currentLanguage }) => {
                 <option value="closed">Closed</option>
               </select>
             </div>
-            
+
             <div className="filter-item">
               <label>Language:</label>
               <select
@@ -344,7 +420,7 @@ const ClientManagement = ({ currentLanguage }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="client-list">
           {filteredClients.length === 0 ? (
             <div className="no-clients-message">
@@ -353,25 +429,25 @@ const ClientManagement = ({ currentLanguage }) => {
           ) : (
             filteredClients.map(client => (
               <div
-                key={client.id}
-                className={`client-card ${selectedClient && selectedClient.id === client.id ? 'selected' : ''}`}
+                key={client._id}
+                className={`client-card ${selectedClient && selectedClient._id === client._id ? 'selected' : ''}`}
                 onClick={() => handleClientSelect(client)}
               >
                 <div className="client-card-header">
                   <div className="client-name">{client.name}</div>
-                  <div 
+                  <div
                     className="client-status"
                     style={{ backgroundColor: getStatusInfo(client.status).color }}
                   >
                     {getStatusInfo(client.status).label}
                   </div>
                 </div>
-                
+
                 <div className="client-contact-info">
                   <div className="client-email">{client.email}</div>
                   <div className="client-phone">{client.phone}</div>
                 </div>
-                
+
                 <div className="client-languages">
                   {client.preferredLanguages.map(lang => (
                     <span key={lang} className="language-tag">
@@ -379,19 +455,19 @@ const ClientManagement = ({ currentLanguage }) => {
                     </span>
                   ))}
                 </div>
-                
+
                 <div className="client-brief">
                   <div className="requirement-preview">
-                    {client.requirements.slice(0, 2).map((req, index) => (
+                    {client.requirements && client.requirements.slice(0, 2).map((req, index) => (
                       <span key={index} className={`requirement-tag ${req.priority}`}>
                         {req.value}
                       </span>
                     ))}
-                    {client.requirements.length > 2 && (
+                    {client.requirements && client.requirements.length > 2 && (
                       <span className="more-tag">+{client.requirements.length - 2} more</span>
                     )}
                   </div>
-                  
+
                   <div className="last-contact">
                     Last Contact: {formatDate(client.lastContact)}
                   </div>
@@ -401,13 +477,13 @@ const ClientManagement = ({ currentLanguage }) => {
           )}
         </div>
       </div>
-      
+
       {/* Client detail section */}
       <div className="client-detail-section">
         {isAddingClient ? (
           <div className="add-client-form">
             <h2>Add New Client</h2>
-            
+
             <div className="form-group">
               <label>Name*:</label>
               <input
@@ -418,7 +494,7 @@ const ClientManagement = ({ currentLanguage }) => {
                 required
               />
             </div>
-            
+
             <div className="form-group">
               <label>Email:</label>
               <input
@@ -428,7 +504,7 @@ const ClientManagement = ({ currentLanguage }) => {
                 className="form-input"
               />
             </div>
-            
+
             <div className="form-group">
               <label>Phone*:</label>
               <input
@@ -439,7 +515,7 @@ const ClientManagement = ({ currentLanguage }) => {
                 required
               />
             </div>
-            
+
             <div className="form-group">
               <label>Preferred Languages:</label>
               <div className="language-toggles">
@@ -455,7 +531,7 @@ const ClientManagement = ({ currentLanguage }) => {
                 ))}
               </div>
             </div>
-            
+
             <div className="form-group">
               <label>Status:</label>
               <select
@@ -471,19 +547,19 @@ const ClientManagement = ({ currentLanguage }) => {
                 <option value="closed">Closed</option>
               </select>
             </div>
-            
+
             <div className="form-group">
               <div className="requirements-header">
                 <label>Requirements:</label>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="add-requirement-btn"
                   onClick={handleAddRequirement}
                 >
                   + Add Requirement
                 </button>
               </div>
-              
+
               {newClientData.requirements.length === 0 ? (
                 <div className="no-requirements">
                   No requirements added yet. Click the button above to add.
@@ -502,7 +578,7 @@ const ClientManagement = ({ currentLanguage }) => {
                         <option value="feature">Feature</option>
                         <option value="budget">Budget</option>
                       </select>
-                      
+
                       <input
                         type="text"
                         value={req.value}
@@ -510,7 +586,7 @@ const ClientManagement = ({ currentLanguage }) => {
                         placeholder="Value"
                         className="requirement-value"
                       />
-                      
+
                       <select
                         value={req.priority}
                         onChange={(e) => handleRequirementChange(index, 'priority', e.target.value)}
@@ -520,7 +596,7 @@ const ClientManagement = ({ currentLanguage }) => {
                         <option value="medium">Medium Priority</option>
                         <option value="high">High Priority</option>
                       </select>
-                      
+
                       <button
                         type="button"
                         className="remove-requirement-btn"
@@ -533,28 +609,28 @@ const ClientManagement = ({ currentLanguage }) => {
                 </div>
               )}
             </div>
-            
+
             <div className="form-group">
               <label>Notes:</label>
               <textarea
-                value={newClientData.notes}
+                value={Array.isArray(newClientData.notes) ? newClientData.notes.join('\n\n') : newClientData.notes}
                 onChange={(e) => handleNewClientChange('notes', e.target.value)}
                 className="form-textarea"
                 rows="4"
                 placeholder="Add any additional notes about the client here..."
               ></textarea>
             </div>
-            
+
             <div className="form-actions">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="cancel-btn"
                 onClick={handleCancelAdd}
               >
                 Cancel
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="save-btn"
                 onClick={handleSaveClient}
               >
@@ -566,14 +642,14 @@ const ClientManagement = ({ currentLanguage }) => {
           <div className="client-details">
             <div className="client-header">
               <h2>{selectedClient.name}</h2>
-              <div 
+              <div
                 className="client-status-badge"
                 style={{ backgroundColor: getStatusInfo(selectedClient.status).color }}
               >
                 {getStatusInfo(selectedClient.status).label}
               </div>
             </div>
-            
+
             <div className="client-info-grid">
               <div className="client-info-card contact-info">
                 <h3>Contact Information</h3>
@@ -600,30 +676,34 @@ const ClientManagement = ({ currentLanguage }) => {
                   <span className="info-value">{formatDate(selectedClient.lastContact)}</span>
                 </div>
               </div>
-              
+
               <div className="client-info-card requirements-info">
                 <h3>Requirements</h3>
                 <div className="requirements-list">
-                  {selectedClient.requirements.map((req, index) => (
-                    <div key={index} className={`requirement-item ${req.priority}`}>
-                      <span className="requirement-type">{req.type.replace('_', ' ')}:</span>
-                      <span className="requirement-value">{req.value}</span>
-                      <span className={`priority-indicator ${req.priority}`}></span>
-                    </div>
-                  ))}
+                  {selectedClient.requirements && selectedClient.requirements.length > 0 ? (
+                    selectedClient.requirements.map((req, index) => (
+                      <div key={index} className={`requirement-item ${req.priority}`}>
+                        <span className="requirement-type">{req.type.replace('_', ' ')}:</span>
+                        <span className="requirement-value">{req.value}</span>
+                        <span className={`priority-indicator ${req.priority}`}></span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="no-requirements">No requirements specified</div>
+                  )}
                 </div>
               </div>
-              
+
               <div className="client-info-card conversations-info">
                 <h3>Conversation History</h3>
-                {selectedClient.conversations.length === 0 ? (
+                {!selectedClient.conversations || selectedClient.conversations.length === 0 ? (
                   <div className="no-conversations">
                     No conversation history yet.
                   </div>
                 ) : (
                   <div className="conversations-timeline">
-                    {selectedClient.conversations.map(conv => (
-                      <div key={conv.id} className="conversation-entry">
+                    {selectedClient.conversations.map((conv, idx) => (
+                      <div key={conv._id || idx} className="conversation-entry">
                         <div className="conversation-date">
                           {formatDate(conv.date)}
                         </div>
@@ -638,17 +718,25 @@ const ClientManagement = ({ currentLanguage }) => {
                     ))}
                   </div>
                 )}
-                <button className="add-conversation-btn">
+                <button className="add-conversation-btn" onClick={handleAddConversation}>
                   Add New Conversation
                 </button>
               </div>
-              
+
               <div className="client-info-card notes-info">
                 <h3>Notes</h3>
                 <div className="notes-content">
-                  {selectedClient.notes.split("\n\n").map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
+                  {selectedClient.notes && typeof selectedClient.notes === 'string' ? (
+                    selectedClient.notes.split("\n\n").map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))
+                  ) : Array.isArray(selectedClient.notes) ? (
+                    selectedClient.notes.map((note, index) => (
+                      <p key={index}>{typeof note === 'string' ? note : note.text}</p>
+                    ))
+                  ) : (
+                    <p>No notes available</p>
+                  )}
                 </div>
                 <div className="add-note-form">
                   <textarea
@@ -657,11 +745,11 @@ const ClientManagement = ({ currentLanguage }) => {
                     className="new-note-input"
                     rows="2"
                   ></textarea>
-                  <button 
+                  <button
                     className="add-note-btn"
                     onClick={() => {
                       const noteInput = document.getElementById('new-note');
-                      handleAddNote(selectedClient.id, noteInput.value);
+                      handleAddNote(selectedClient._id, noteInput.value);
                       noteInput.value = '';
                     }}
                   >
@@ -670,7 +758,7 @@ const ClientManagement = ({ currentLanguage }) => {
                 </div>
               </div>
             </div>
-            
+
             <div className="client-actions">
               <button className="action-btn edit-btn">Edit Client</button>
               <button className="action-btn schedule-btn">Schedule Followup</button>
@@ -687,6 +775,15 @@ const ClientManagement = ({ currentLanguage }) => {
           </div>
         )}
       </div>
+
+      {/* Conversation Form Modal */}
+      {isAddingConversation && (
+        <ConversationForm
+          clientId={selectedClient._id}
+          onSave={handleSaveConversation}
+          onCancel={handleCancelAddConversation}
+        />
+      )}
     </div>
   );
 };

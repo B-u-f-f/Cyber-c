@@ -7,6 +7,7 @@ const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    username: '', // Added username field
     password: '',
     password2: '',
     role: 'agent' // Default role
@@ -26,7 +27,7 @@ const Register = () => {
     clearError();
   }, [isAuthenticated, navigate, clearError]);
 
-  const { name, email, password, password2, role } = formData;
+  const { name, email, username, password, password2, role } = formData;
 
   const validateForm = () => {
     let errors = {};
@@ -42,6 +43,11 @@ const Register = () => {
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       errors.email = 'Email address is invalid';
+      isValid = false;
+    }
+
+    if (!username.trim()) {
+      errors.username = 'Username is required';
       isValid = false;
     }
 
@@ -79,6 +85,7 @@ const Register = () => {
       const userData = {
         name,
         email,
+        username,
         password,
         role
       };
@@ -129,6 +136,22 @@ const Register = () => {
               disabled={isSubmitting}
             />
             {formErrors.email && <p className="error-text">{formErrors.email}</p>}
+          </div>
+          
+          {/* Added username field */}
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              value={username}
+              onChange={onChange}
+              placeholder="Choose a username"
+              className={formErrors.username ? 'input-error' : ''}
+              disabled={isSubmitting}
+            />
+            {formErrors.username && <p className="error-text">{formErrors.username}</p>}
           </div>
           
           <div className="form-group">
