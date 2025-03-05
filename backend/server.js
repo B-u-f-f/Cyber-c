@@ -54,7 +54,6 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 
@@ -146,42 +145,25 @@ async function attemptTranslation(text, sourceLanguage, targetLanguage) {
   }
 }
 
-// Chatbot Route with Multilingual Support
 app.post("/chatbot", async (req, res) => {
-  const { prompt, sourceLanguage, targetLanguage } = req.body;
+  const { prompt, targetLanguage } = req.body;
 
   if (!prompt) {
     return res.status(400).json({ error: "Prompt is required" });
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-pro-exp-02-05" });
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-    // Stronger prompt to enforce language preference
-    const enhancedPrompt = `
-      You are a multilingual real estate assistant. 
-      The user is speaking in ${sourceLanguage}. 
-      Respond **ONLY in** ${targetLanguage}. 
-      Do not use English unless specifically asked. 
-      Here is the user's query:
-      ${prompt}
-    `;
-
+    // Generate response using Gemini AI
+    const enhancedPrompt = `Provide a response in ${targetLanguage} for: ${prompt}`;
     const result = await model.generateContent(enhancedPrompt);
     const response = result.response.text();
-    const formattedResponse = response.replace(/\n/g, "<br>");
 
-    res.json({
-      reply: formattedResponse,
-      sourceLanguage,
-      targetLanguage
-    });
+    res.json({ reply: response });
   } catch (error) {
     console.error("Chatbot error:", error);
-    res.status(500).json({
-      error: "Failed to generate chatbot response",
-      details: error.message
-    });
+    res.status(500).json({ error: "Failed to generate response" });
   }
 });
 

@@ -6,7 +6,9 @@ const realEstateKeywords = [
   "apartment", "house", "villa", "rent", "buy", "sell", "location", "neighborhood",
   "bedroom", "bathroom", "furnished", "mortgage", "loan", "property", "real estate",
   "broker", "agent", "square feet", "budget", "price", "balcony", "garage", "view", "locality",
-  "amenities", "garden", "pool", "security", "investment", "commercial", "residential"
+  "amenities", "garden", "pool", "security", "investment", "commercial", "residential", "Mumbai",
+  "Bangalore", "Pune", "Delhi", "Chennai", "Hyderabad", "Kolkata", "Ahmedabad", "Jaipur", "Lucknow"
+
 ];
 
 const SpeechRecognitionComponent = () => {
@@ -128,7 +130,7 @@ const SpeechRecognitionComponent = () => {
           return `<li>🏦 <a href="https://www.bankbazaar.com/home-loan.html" target="_blank">Compare mortgage rates</a></li>`;
         }
         if (["location", "neighborhood"].includes(keyword)) {
-          return `<li>📍 <a href="/top-locations" target="_blank">Find best locations</a></li>`;
+          return `<li>📍 <a href="/properties" target="_blank">Find best locations</a></li>`;
         }
         return `<li>🔍 More details on ${keyword}</li>`;
       });

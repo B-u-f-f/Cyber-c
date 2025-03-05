@@ -9,7 +9,7 @@ const PropertyList = () => {
   const [filters, setFilters] = useState({
     bedrooms: '2,3',
     propertyType: '',
-    city: 'New-Delhi'
+    city: 'Mumbai'
   });
   const [cityStatus, setCityStatus] = useState({});
   const [sourceFilter, setSourceFilter] = useState('all'); // 'all', 'housing', 'magicbricks'
@@ -105,8 +105,8 @@ const PropertyList = () => {
         <div className="filter-group">
           <label>City</label>
           <select name="city" value={filters.city} onChange={handleFilterChange}>
-            <option value="New-Delhi">{getCityLabel('New-Delhi', 'New Delhi')}</option>
             <option value="Mumbai">{getCityLabel('Mumbai', 'Mumbai')}</option>
+            <option value="New-Delhi">{getCityLabel('New-Delhi', 'New Delhi')}</option>
             <option value="Bangalore">{getCityLabel('Bangalore', 'Bangalore')}</option>
             <option value="Hyderabad">{getCityLabel('Hyderabad', 'Hyderabad')}</option>
             <option value="Pune">{getCityLabel('Pune', 'Pune')}</option>
@@ -143,10 +143,10 @@ const PropertyList = () => {
           <p>{error}</p>
           <p className="error-help">
             Try selecting a different city or refreshing the page.
-            {filters.city !== 'New-Delhi' && 
+            {filters.city !== 'Mumbai' && 
               <button 
                 onClick={() => {
-                  setFilters(prev => ({...prev, city: 'New-Delhi'}));
+                  setFilters(prev => ({...prev, city: 'Mumbai'}));
                   setTimeout(fetchProperties, 100);
                 }}
                 className="try-delhi-btn"
